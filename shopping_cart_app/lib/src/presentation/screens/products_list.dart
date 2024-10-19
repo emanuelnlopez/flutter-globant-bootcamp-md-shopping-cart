@@ -37,6 +37,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final int userId = ModalRoute.of(context)?.settings.arguments as int;
     final prefs = context.watch<ApplicationPreferences>();
 
     return Scaffold(
@@ -46,17 +47,22 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         actions: [
           IconButton(
             onPressed: prefs.toggleOnlyInShoppingCart,
+            tooltip: 'Shopping cart',
             icon: Icon(
               prefs.onlyInShoppingCart ? Icons.shopping_cart_rounded : Icons.shopping_cart_outlined,
               color: prefs.onlyInShoppingCart ? Colors.black : null,
             )
           ),
           IconButton(
-            onPressed: prefs.toggleTheme, 
-            icon: Icon(
-              prefs.darkMode ? Icons.dark_mode : Icons.dark_mode_outlined,
-              color: prefs.darkMode ? Colors.black : null,
-            )
+            onPressed: () {
+              Navigator.pushNamed(
+                context, 
+                '/generalSettings',
+                arguments: userId
+              );
+            },
+            tooltip: 'App settings', 
+            icon: const Icon(Icons.settings),
           )
         ],
       ),

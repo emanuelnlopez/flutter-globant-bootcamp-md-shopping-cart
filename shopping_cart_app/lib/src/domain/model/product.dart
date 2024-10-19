@@ -27,7 +27,7 @@ class Product {
     category: map['category'], 
     image: map['image'], 
     rate: (map['rating']['rate'] as num).toDouble(), 
-    count: map['rating']['count']
+    count: map['rating']['count'],
   );
 
   static List<Product> fromDynamicList(dynamic list) {

@@ -40,8 +40,9 @@ class _ProductDetailState extends State<ProductDetail> {
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: prefs ? 
-            [Colors.blue, Colors.black] : [Colors.blue, Colors.white], 
+            colors: prefs 
+            ? [Colors.blue, Colors.blueAccent, const Color.fromARGB(255, 9, 78, 182) ,const Color.fromARGB(255, 2, 7, 129)] 
+            : [Colors.blue, Colors.white], 
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )

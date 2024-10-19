@@ -30,6 +30,14 @@ class ApplicationPreferences with ChangeNotifier, WidgetsBindingObserver {
   bool get darkMode => _darkMode;
   bool get onlyInShoppingCart => _onlyInShoppingCart;
 
+  void setDarkMode(bool value) {
+    _darkMode = value;
+
+    notifyListeners();
+
+    _preferences.setBool(PreferencesKeys.darkMode, _darkMode);
+  }
+
   void toggleAddedToShoppingCart(int id) {
     if (_addedToShoppingCart.contains(id)) {
       _addedToShoppingCart.remove(id);
