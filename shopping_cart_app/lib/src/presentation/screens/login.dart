@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_cart_app/src/presentation/state/user_controller.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -88,10 +89,8 @@ class Login extends StatelessWidget {
 
                     if (user != null) {
                       if (context.mounted) {
-                        Navigator.pushReplacementNamed(
-                          context, 
-                          '/products',
-                          arguments: user.id
+                        GoRouter.of(context).pushReplacement(
+                          '/products/${user.id}'
                         );
                       }
                     }
@@ -108,8 +107,7 @@ class Login extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(
-                      context, 
+                    GoRouter.of(context).push(
                       '/signUp',
                     );
                   }, 

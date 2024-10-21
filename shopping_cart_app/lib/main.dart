@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_cart_app/src/data/data.dart';
-import 'package:shopping_cart_app/src/presentation/screens/about_app.dart';
-import 'package:shopping_cart_app/src/presentation/screens/address_management.dart';
-import 'package:shopping_cart_app/src/presentation/screens/app_start.dart';
-import 'package:shopping_cart_app/src/presentation/screens/login.dart';
-import 'package:shopping_cart_app/src/presentation/screens/payment_methods.dart';
-import 'package:shopping_cart_app/src/presentation/screens/products_list.dart';
-import 'package:shopping_cart_app/src/presentation/screens/general_settings.dart';
-import 'package:shopping_cart_app/src/presentation/screens/settings.dart';
-import 'package:shopping_cart_app/src/presentation/screens/sign_up.dart';
-import 'package:shopping_cart_app/src/presentation/screens/user_profile.dart';
-import 'package:shopping_cart_app/src/presentation/state/application_preferences.dart';
-import 'package:shopping_cart_app/src/presentation/state/shopping_cart_controller.dart';
-import 'package:shopping_cart_app/src/presentation/state/user_controller.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,26 +33,77 @@ class ShoppingCartApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final routes = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const AppStart(),
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const Login(),
+        ),
+        GoRoute(
+          path: '/signUp',
+          builder: (context, state) => const SignUp(),
+        ),
+        GoRoute(
+          path: '/products/:id',
+          builder: (context, state) => ProductsListScreen(
+            userId: int.parse(state.pathParameters['id']!)
+          ),
+        ),
+        GoRoute(
+          path: '/productDetail/:productId',
+          builder: (context, state) => ProductDetail(
+            productId: int.parse(state.pathParameters['productId']!)
+          ),
+        ),
+        GoRoute(
+          path: '/checkout',
+          builder: (context, state) => const Checkout(),
+        ),
+        GoRoute(
+          path: '/userProfile/:id',
+          builder: (context, state) => UserProfile(
+            userId: int.parse(state.pathParameters['id']!)
+          ),
+        ),
+        GoRoute(
+          path: '/generalSettings/:id',
+          builder: (context, state) => GeneralSettings(
+            userId: int.parse(state.pathParameters['id']!)
+          ),
+        ),
+        GoRoute(
+          path: '/termsNconditions',
+          builder: (context, state) => const TermsAndConditions(),
+        ),
+        GoRoute(
+          path: '/addresses',
+          builder: (context, state) => const AddressManagement(),
+        ),
+        GoRoute(
+          path: '/payment-methods/:id',
+          builder: (context, state) => PaymentMethods(
+            userId: int.parse(state.pathParameters['id']!)
+          ),
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const Settings(),
+        ),
+      ] 
+    );
+
     return Consumer<ApplicationPreferences>(
-      builder: (context, prefs, child) => MaterialApp(
+      builder: (context, prefs, child) => MaterialApp.router(
         debugShowCheckedModeBanner: false,
         darkTheme: ThemeData.dark(),
         theme: ThemeData.light(),
         themeMode: prefs.darkMode ? ThemeMode.dark : ThemeMode.light,
         title: 'Shopping Cart App',
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const AppStart(),
-          '/login': (context) => const Login(),
-          '/signUp': (context) => const SignUp(),
-          '/products': (context) => const ProductsListScreen(),
-          '/userProfile': (context) => const UserProfile(),
-          '/generalSettings': (context) => const GeneralSettings(),
-          '/termsNconditions': (context) => const TermsAndConditions(),
-          '/addresses': (context) => const AddressManagement(),
-          '/payment-methods': (context) => const PaymentMethods(),
-          '/settings': (context) => const Settings(),
-        },
+        routerConfig: routes,
       )
     );
   }

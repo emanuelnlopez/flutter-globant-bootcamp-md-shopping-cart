@@ -23,17 +23,32 @@ class ShoppingCartController implements Dispose {
     try {
       final products = await _shoppingCartRepository.getAllProducts();
 
+      if (!_shoppingCartStreamController.isClosed) {
       _shoppingCartStreamController.add(products);
+    }
     }
     catch (error) {
       _shoppingCartStreamController.addError(error);
     }
   }
 
+  Future<Product> getProductById(int id) async {
+    final product = await _shoppingCartRepository.getASingleProduct(id);
+
+    return product;
+  }
+
   void addProductToCart(List<Product> products) {
     _shoppingCartProducts.clear();
+
     _shoppingCartProducts.addAll(products);
     
+    _shoppingCartStreamController.add(_shoppingCartProducts);
+  }
+
+  void clearCart() {
+    _shoppingCartProducts.clear();
+
     _shoppingCartStreamController.add(_shoppingCartProducts);
   }
 

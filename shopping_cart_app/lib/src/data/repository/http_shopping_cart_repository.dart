@@ -78,7 +78,25 @@ class HttpShoppingCartRepository implements ShoppingCartRepository {
       return userFound;
     }
     else {
-      throw Exception('Failed to fetch a user with id: $id');
+      throw Exception('Error fetching user with id: $id');
+    }
+  }
+
+  @override
+  Future<Product> getASingleProduct(int id) async {
+    final uri = Uri.parse('${ShoppingCartRepository.apiGetProduct}$id');
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final productFound = Product.fromDynamic(
+        json.decode(response.body)
+      );
+
+      return productFound;
+    }
+    else {
+      throw Exception('Error fetching product with id: $id');
     }
   }
 }

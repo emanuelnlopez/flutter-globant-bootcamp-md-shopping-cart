@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class PreferencesKeys {
+abstract class PreferencesKeysUser {
   static const darkMode = 'darkMode';
   static const addedToShoppingCart = 'addedToShoppingCart';
   static const onlyInShoppingCart = 'onlyInShoppingCart';
@@ -12,10 +12,10 @@ class ApplicationPreferences with ChangeNotifier, WidgetsBindingObserver {
     required SharedPreferences preferences,
   }) : _preferences = preferences {
     _addedToShoppingCart.addAll(
-      _preferences.getStringList(PreferencesKeys.addedToShoppingCart)?.map((e) => int.parse(e)) ?? [],
+      _preferences.getStringList(PreferencesKeysUser.addedToShoppingCart)?.map((e) => int.parse(e)) ?? [],
     );
-    _darkMode = _preferences.getBool(PreferencesKeys.darkMode) ?? false;
-    _onlyInShoppingCart = _preferences.getBool(PreferencesKeys.onlyInShoppingCart) ?? false;
+    _darkMode = _preferences.getBool(PreferencesKeysUser.darkMode) ?? false;
+    _onlyInShoppingCart = _preferences.getBool(PreferencesKeysUser.onlyInShoppingCart) ?? false;
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -35,7 +35,7 @@ class ApplicationPreferences with ChangeNotifier, WidgetsBindingObserver {
 
     notifyListeners();
 
-    _preferences.setBool(PreferencesKeys.darkMode, _darkMode);
+    _preferences.setBool(PreferencesKeysUser.darkMode, _darkMode);
   }
 
   void toggleAddedToShoppingCart(int id) {
@@ -72,15 +72,15 @@ class ApplicationPreferences with ChangeNotifier, WidgetsBindingObserver {
 
   void _updatePreferences() async {
     await _preferences.setStringList(
-      PreferencesKeys.addedToShoppingCart,
+      PreferencesKeysUser.addedToShoppingCart,
       _addedToShoppingCart.map((e) => e.toString()).toList(growable: false),
     );
     await _preferences.setBool(
-      PreferencesKeys.darkMode,
+      PreferencesKeysUser.darkMode,
       _darkMode,
     );
     await _preferences.setBool(
-      PreferencesKeys.onlyInShoppingCart,
+      PreferencesKeysUser.onlyInShoppingCart,
       _onlyInShoppingCart,
     );
   }

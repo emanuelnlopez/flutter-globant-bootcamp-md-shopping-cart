@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 class AppStart extends StatefulWidget {
@@ -16,7 +17,7 @@ class _AppStartState extends State<AppStart> {
     super.initState();
 
     Timer(const Duration(seconds: 8), () {
-      Navigator.pushReplacementNamed(context, '/login');
+      GoRouter.of(context).pushReplacement('/login');
     });
   }
   

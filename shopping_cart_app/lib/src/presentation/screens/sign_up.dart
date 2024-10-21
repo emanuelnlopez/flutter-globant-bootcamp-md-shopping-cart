@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_cart_app/src/domain/domain.dart';
-import 'package:shopping_cart_app/src/presentation/state/user_controller.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({

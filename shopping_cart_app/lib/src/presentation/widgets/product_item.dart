@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_cart_app/src/domain/model/product.dart';
-import 'package:shopping_cart_app/src/presentation/screens/product_detail.dart';
-import 'package:shopping_cart_app/src/presentation/widgets/product_image.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:shopping_cart_app/src/domain/domain.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -22,11 +23,8 @@ class ProductItem extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductDetail(product: product)
-          )
+        GoRouter.of(context).push(
+          '/productDetail/${product.id}'
         );
       },
       child: Padding(
@@ -69,7 +67,7 @@ class ProductItem extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                '\$ ${product.price.toStringAsFixed(2)}',
+                formatCurrency(product.price),
                 style: theme.textTheme.bodyMedium,
                 textAlign: TextAlign.end,
               ),
@@ -85,5 +83,11 @@ class ProductItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String formatCurrency(double amount) {
+    final format = NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 2);
+
+    return format.format(amount);
   }
 }

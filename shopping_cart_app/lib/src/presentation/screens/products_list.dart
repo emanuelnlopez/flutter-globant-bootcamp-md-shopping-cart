@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_cart_app/src/domain/domain.dart';
-import 'package:shopping_cart_app/src/presentation/screens/checkout.dart';
-import 'package:shopping_cart_app/src/presentation/state/application_preferences.dart';
-import 'package:shopping_cart_app/src/presentation/state/shopping_cart_controller.dart';
-import 'package:shopping_cart_app/src/presentation/widgets/product_item.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 class ProductsListScreen extends StatefulWidget {
-  const ProductsListScreen({super.key});
+  const ProductsListScreen({
+    required this.userId,
+    super.key
+  });
+
+  final int userId;
 
   @override
   State<ProductsListScreen> createState() => _ProductsListScreenState();
@@ -37,7 +40,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int userId = ModalRoute.of(context)?.settings.arguments as int;
     final prefs = context.watch<ApplicationPreferences>();
 
     return Scaffold(
@@ -55,10 +57,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(
-                context, 
-                '/generalSettings',
-                arguments: userId
+              GoRouter.of(context).push(
+                '/generalSettings/${widget.userId}',
               );
             },
             tooltip: 'App settings', 
@@ -112,9 +112,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 ),
               );
               isClicked = true;
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => const Checkout())
+              GoRouter.of(context).push(
+                '/checkout',
               ).then((_) {
                 _shoppingCartController.getAllProducts();
               });

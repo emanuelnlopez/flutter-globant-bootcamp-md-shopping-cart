@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_cart_app/src/domain/model/user.dart';
-import 'package:shopping_cart_app/src/presentation/state/user_controller.dart';
+import 'package:shopping_cart_app/src/domain/domain.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 class GeneralSettings extends StatelessWidget {
-  const GeneralSettings({super.key});
+  const GeneralSettings({
+    required this.userId,
+    super.key
+  });
+
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
-    final int userId = ModalRoute.of(context)?.settings.arguments as int;
-
     return FutureBuilder<User?>(
       future: context.read<UserController>().getUserById(userId),
       builder: (context, snapshot) {
@@ -41,10 +45,8 @@ class GeneralSettings extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.person),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/userProfile',
-                    arguments: user,
+                  onTap: () => GoRouter.of(context).push(
+                    '/userProfile/${user.id}',
                   ),
                   subtitle: Text(user.username),
                   title: const Text('User profile'),
@@ -52,9 +54,8 @@ class GeneralSettings extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.notifications),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/settings'
+                  onTap: () => GoRouter.of(context).push(
+                    '/settings',
                   ),
                   subtitle: const Text('Theme, Notifications, etc'),
                   title: const Text('Settings'),
@@ -62,9 +63,8 @@ class GeneralSettings extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.location_on),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/addresses'
+                  onTap: () => GoRouter.of(context).push(
+                    '/addresses',
                   ),
                   subtitle: const Text('Manage your shipping addresses'),
                   title: const Text('Addresses'),
@@ -72,10 +72,8 @@ class GeneralSettings extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.credit_card),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/payment-methods',
-                    arguments: user,
+                  onTap: () => GoRouter.of(context).push(
+                    '/payment-methods/${user.id}',
                   ),
                   subtitle: const Text('Manage your saved payment methods'),
                   title: const Text('Payment methods'),
@@ -83,8 +81,7 @@ class GeneralSettings extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.help_center),
-                  onTap: () => Navigator.pushNamed(
-                    context,
+                  onTap: () => GoRouter.of(context).push(
                     '/termsNconditions',
                   ),
                   subtitle: const Text('Learn more about the app'),
@@ -97,11 +94,7 @@ class GeneralSettings extends StatelessWidget {
                     await context.read<UserController>().logOut();
 
                     if (context.mounted) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context, 
-                        '/login', 
-                        (Route<dynamic> route) => false,
-                      );
+                      GoRouter.of(context).go('/login');
                     }
                   },
                   subtitle: const Text('End user session'),

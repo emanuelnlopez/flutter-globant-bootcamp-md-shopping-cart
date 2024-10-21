@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_cart_app/src/domain/model/user.dart';
+import 'package:shopping_cart_app/src/domain/domain.dart';
 
 class UserItem extends StatelessWidget {
   const UserItem({

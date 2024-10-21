@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_cart_app/src/domain/domain.dart';
-import 'package:shopping_cart_app/src/presentation/state/application_preferences.dart';
-import 'package:shopping_cart_app/src/presentation/state/shopping_cart_controller.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
+import 'package:intl/intl.dart';
 
 class Checkout extends StatefulWidget {
   const Checkout({super.key});
@@ -91,7 +92,7 @@ class _CheckoutState extends State<Checkout> {
                   double totalPrice = _shoppingCartController.calculateTotalPrice();
 
                   return Text(
-                    '\$ ${totalPrice.toStringAsFixed(2)}',
+                    formatCurrency(totalPrice),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -100,7 +101,7 @@ class _CheckoutState extends State<Checkout> {
                 }
                 else {
                   return Text(
-                    '\$ 0.00',
+                    formatCurrency(0.0),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -112,54 +113,76 @@ class _CheckoutState extends State<Checkout> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 30.0),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: _isExpanded ? MediaQuery.of(context).size.width : _buttonWidth,
-          height: 50,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              setState(() {
-                _isExpanded = true;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Processing payment...'),
-                    duration: Duration(seconds: 5),
-                  ),
-                );
-        
-                Future.delayed(const Duration(milliseconds: 500), () {
+      floatingActionButton: StreamBuilder<List<Product>>(
+        stream: context.read<ShoppingCartController>().shoppingCartStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const SizedBox.shrink(); 
+          }
+          return Padding(
+            padding: const EdgeInsets.only(left: 30.0),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: _isExpanded ? MediaQuery.of(context).size.width : _buttonWidth,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: () {
                   setState(() {
-                    _isExpanded = false;
+                    _isExpanded = true;
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Confirmed payment'),
-                        duration: Duration(seconds: 2),
-                        backgroundColor: Colors.green,
+                        content: Text('Processing payment...'),
+                        duration: Duration(seconds: 5),
                       ),
                     );
+                    
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      setState(() {
+                        _isExpanded = false;
+                  
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Confirmed payment'),
+                            duration: Duration(seconds: 2),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      });
+                    });
+                  
+                    Future.delayed(const Duration(seconds: 7), () {
+                      _shoppingCartController.clearCart();
+                              
+                      GoRouter.of(context).pop();
+                    });
                   });
-                });
-              });
-            }, 
-            icon: const Icon(Icons.check),
-            label: const Text('Confirm'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: prefs.darkMode ? Colors.black : Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
+                }, 
+                icon: const Icon(Icons.check),
+                label: const Text('Confirm'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: prefs.darkMode ? Colors.black : Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                  )
+                ),
               ),
-              textStyle: const TextStyle(
-                fontSize: 16,
-              )
             ),
-            ),
-        ),
-      ),
+          );      
+        }
+      )
     );
+  }
+
+  String formatCurrency(double amount) {
+    final format = NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 2);
+
+    return format.format(amount);
   }
 }
 
