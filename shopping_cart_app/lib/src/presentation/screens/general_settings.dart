@@ -14,32 +14,32 @@ class GeneralSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<User?>(
-      future: context.read<UserController>().getUserById(userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        else if (snapshot.hasError) {
-          return const Center(
-            child: Text('Error loading user data.'),
-          );
-        }
-        else if (!snapshot.hasData || snapshot.data == null) {
-          return const Center(
-            child: Text('User not found.'),
-          );
-        }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('General settings'),
+      ),
+      body: FutureBuilder<User?>(
+        future: context.read<UserController>().getUserById(userId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          else if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error loading user data.'),
+            );
+          }
+          else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(
+              child: Text('User not found.'),
+            );
+          }
 
-        final user = snapshot.data!;
+          final user = snapshot.data!;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('General settings'),
-          ),
-          body: SingleChildScrollView(
+          return SingleChildScrollView(
             padding: const EdgeInsets.only(right: 10, left: 10),
             child: Column(
               children: [
@@ -103,9 +103,9 @@ class GeneralSettings extends StatelessWidget {
                 )
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
