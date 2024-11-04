@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_cart_app/src/presentation/presentation.dart';
 
 class AppStart extends StatefulWidget {
   const AppStart({super.key});
@@ -16,11 +18,16 @@ class _AppStartState extends State<AppStart> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 8), () {
-      GoRouter.of(context).pushReplacement('/login');
+    Timer(const Duration(seconds: 3), () {
+      final userController = context.read<UserController>();
+      var route = '/login';
+      if (userController.isLoggedIn) {
+        route = '/products/${userController.userId}';
+      }
+      GoRouter.of(context).pushReplacement(route);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

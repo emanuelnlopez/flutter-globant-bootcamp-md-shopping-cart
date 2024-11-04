@@ -12,27 +12,28 @@ class UserController with ChangeNotifier {
     required SharedPreferences preferences,
     required this.shoppingCartRepository,
   }) : _preferences = preferences {
-    _loggedIn = _preferences.getBool(PreferencesKeys.loggedIn) ?? false;
+    _userId = _preferences.getInt(PreferencesKeys.loggedIn);
   }
 
   final SharedPreferences _preferences;
   final HttpShoppingCartRepository shoppingCartRepository;
 
-  late bool _loggedIn;
+  int? _userId;
 
-  bool get isLoggedIn => _loggedIn;
+  bool get isLoggedIn => _userId != null;
+  int? get userId => _userId;
 
-  Future<void> logIn() async {
-    await _preferences.setBool(PreferencesKeys.loggedIn, true);
+  Future<void> logIn(int userId) async {
+    await _preferences.setInt(PreferencesKeys.loggedIn, userId);
 
-    _loggedIn = true;
+    _userId = userId;
     notifyListeners();
   }
 
   Future<void> logOut() async {
-    await _preferences.setBool(PreferencesKeys.loggedIn, false);
+    await _preferences.remove(PreferencesKeys.loggedIn);
 
-    _loggedIn = false;
+    _userId = null;
     notifyListeners();
   }
 
@@ -93,7 +94,7 @@ class UserController with ChangeNotifier {
 
       for (var user in users) {
         if (user.username == username && user.password == password) {
-          await logIn();
+        await logIn(user.id);
 
           return user;
         }
